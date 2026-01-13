@@ -45,16 +45,6 @@ async def health_check():
     )
 
 
-@app.get("/api/v1/health", response_model=HealthResponse)
-async def api_health_check():
-    """API v1 health check endpoint"""
-    return HealthResponse(
-        status="healthy",
-        timestamp=datetime.utcnow().isoformat(),
-        version="1.0.0"
-    )
-
-
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
