@@ -196,7 +196,7 @@ def compute_species_activity(
 def compute_overall_activity(
     night_full_data: pd.DataFrame,
     time_bins: pd.DatetimeIndex
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> np.ndarray:
     """
     Compute overall acoustic activity per time bin.
     
@@ -205,15 +205,10 @@ def compute_overall_activity(
         time_bins: Time bin edges
         
     Returns:
-        Tuple of (counts, normalized_intensities)
+        Counts per bin
     """
     counts, _ = np.histogram(night_full_data['datetime'], bins=time_bins)
-    
-    # Normalize intensities (0-1 scale)
-    max_count = max(counts) if max(counts) > 0 else 1
-    intensities = counts / max_count
-    
-    return counts, intensities
+    return counts
 
 
 def compute_mit_breakdown(

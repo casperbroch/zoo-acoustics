@@ -39,7 +39,6 @@ class OverallActivityData(BaseModel):
     time: str = Field(..., description="Time label (HH:MM format)")
     timestamp: datetime = Field(..., description="Exact timestamp of bin center")
     total_clips: int = Field(..., description="Total sound clips in this bin")
-    intensity: float = Field(..., description="Normalized intensity (0-1)")
 
 
 class MITSoundTypeData(BaseModel):
@@ -105,6 +104,73 @@ class NighttimeActivityResponse(BaseModel):
         ...,
         description="Summary statistics for the night"
     )
+
+
+class SpeciesActivityAudioResponse(BaseModel):
+    """Audio clips for a species activity time bin"""
+    zoo_name: str
+    enclosure_name: str
+    night_date: date = Field(
+        ...,
+        description="The date of the night (starts at 8 PM this date, ends 3 AM next day)"
+    )
+    timestamp: datetime = Field(
+        ...,
+        description="Exact timestamp of the bin center (must match species_activity timestamps)"
+    )
+    bin_start: datetime = Field(..., description="Start timestamp of the bin (inclusive)")
+    bin_end: datetime = Field(..., description="End timestamp of the bin (exclusive)")
+    species_audio: Dict[str, List[str]] = Field(
+        ...,
+        description="Mapping of species (scientific name) to list of .wav file paths"
+    )
+    total_clips: int = Field(..., description="Total number of bird detections in this bin")
+
+
+class MITSoundTypeAudioResponse(BaseModel):
+    """Audio clips for a MIT sound-type time bin"""
+    zoo_name: str
+    enclosure_name: str
+    night_date: date = Field(
+        ...,
+        description="The date of the night (starts at 8 PM this date, ends 3 AM next day)"
+    )
+    timestamp: datetime = Field(
+        ...,
+        description="Exact timestamp of the bin center (must match mit_breakdown timestamps)"
+    )
+    bin_start: datetime = Field(..., description="Start timestamp of the bin (inclusive)")
+    bin_end: datetime = Field(..., description="End timestamp of the bin (exclusive)")
+    sound_type: str = Field(..., description="MIT sound type label")
+    audio_paths: List[str] = Field(..., description="List of .wav file paths")
+    total_clips: int = Field(..., description="Total number of clips in this bin for the sound type")
+
+
+class OverallActivityAudioItem(BaseModel):
+    """Audio item with MIT sound type"""
+    file_path: str = Field(..., description=".wav file path")
+    sound_type: str = Field(..., description="MIT sound type label")
+
+
+class OverallActivityAudioResponse(BaseModel):
+    """Audio clips for overall activity time bin"""
+    zoo_name: str
+    enclosure_name: str
+    night_date: date = Field(
+        ...,
+        description="The date of the night (starts at 8 PM this date, ends 3 AM next day)"
+    )
+    timestamp: datetime = Field(
+        ...,
+        description="Exact timestamp of the bin center (must match overall_activity timestamps)"
+    )
+    bin_start: datetime = Field(..., description="Start timestamp of the bin (inclusive)")
+    bin_end: datetime = Field(..., description="End timestamp of the bin (exclusive)")
+    audio: List[OverallActivityAudioItem] = Field(
+        ...,
+        description="List of audio paths with their MIT sound types"
+    )
+    total_clips: int = Field(..., description="Total number of clips in this bin")
 
 
 class ErrorResponse(BaseModel):
